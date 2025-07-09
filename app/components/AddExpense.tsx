@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Card, Form, Input, Button, Select, DatePicker, InputNumber, Checkbox, Tabs, Space } from 'antd';
+import { Card, Form, Input, Button, Select, DatePicker, InputNumber, Checkbox, Tabs, Space, Row, Col, Avatar } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import TabPane from 'antd/es/tabs/TabPane';
 
@@ -99,136 +99,79 @@ export default function AddExpense({ participants, onAddExpense }: AddExpensePro
         },
     ];
 
-    // // State for 'equally' split
-    // const [selectedParticipants, setSelectedParticipants] = useState<Set<number>>(new Set());
-
-    // // State for 'itemized' split
-    // const [items, setItems] = useState([{ description: '', price: '', participants: new Set<number>() }]);
-
-    // const handleParticipantToggle = (id: number) => {
-    //     setSelectedParticipants(prev => {
-    //     const next = new Set(prev);
-    //     if (next.has(id)) {
-    //         next.delete(id);
-    //     } else {
-    //         next.add(id);
-    //     }
-    //     return next;
-    //     });
-    // };
-
-    // const handleAddItem = () => {
-    //     setItems([...items, { description: '', price: '', participants: new Set<number>() }]);
-    // };
-    
-    // const handleItemChange = (index: number, field: string, value: string) => {
-    //     const newItems = [...items];
-    //     newItems[index] = { ...newItems[index], [field]: value };
-    //     setItems(newItems);
-    // };
-
-    // const handleItemParticipantToggle = (itemIndex: number, participantId: number) => {
-    //     const newItems = [...items];
-    //     const participants = new Set(newItems[itemIndex].participants);
-    //     if (participants.has(participantId)) {
-    //         participants.delete(participantId);
-    //     } else {
-    //         participants.add(participantId);
-    //     }
-    //     newItems[itemIndex].participants = participants;
-    //     setItems(newItems);
-    // };
-
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     // Validation logic here...
-        
-    //     let expenseData;
-    //     if (splitMethod === 'equally') {
-    //     expenseData = { description, amount, paidById, expenseDate, splitMethod, participants: Array.from(selectedParticipants) };
-    //     } else {
-    //     const totalAmount = items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
-    //     expenseData = { description, amount: totalAmount, paidById, expenseDate, splitMethod, items: items.map(item => ({...item, participants: Array.from(item.participants)})) };
-    //     }
-        
-    //     await onAddExpense(expenseData);
-
-    //     // Reset form state
-    //     setDescription('');
-    //     setAmount('');
-    //     setPaidById(null);
-    //     setSelectedParticipants(new Set());
-    //     setItems([{ description: '', price: '', participants: new Set<number>() }]);
-    // };
-
-    // const tabItems = [
-    //     {
-    //         key: 'equally',
-    //         label: 'Split Equally',
-    //         children: (
-    //             <>
-    //                 <Form.Item name="amount" label="Total Amount" rules={[{ required: true }]}>
-    //                     <InputNumber prefix="Rp" style={{ width: '100%' }} />
-    //                 </Form.Item>
-    //                 <Form.Item name="participants" label="Split Among" rules={[{ required: true }]}>
-    //                     <Checkbox.Group options={participants.map(p => ({ label: p.name, value: p.id }))} />
-    //                 </Form.Item>
-    //             </>
-    //         ),
-    //     },
-    //     {
-    //         key: 'itemized',
-    //         label: 'By Item',
-    //         children: (
-    //             <Form.List name="items">
-    //                 {(fields, { add, remove }) => (
-    //                     <>
-    //                         {fields.map(({ key, name, ...restField }) => (
-    //                             <div key={key} style={{ display: 'flex', marginBottom: 8, gap: 8 }}>
-    //                                 <Form.Item {...restField} name={[name, 'description']} style={{ flex: 1 }} rules={[{ required: true }]}>
-    //                                     <Input placeholder="Item Description" />
-    //                                 </Form.Item>
-    //                                 <Form.Item {...restField} name={[name, 'price']} rules={[{ required: true }]}>
-    //                                     <InputNumber prefix="Rp" placeholder="Price" />
-    //                                 </Form.Item>
-    //                                 <MinusCircleOutlined onClick={() => remove(name)} />
-    //                             </div>
-    //                         ))}
-    //                         <Form.Item>
-    //                             <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-    //                                 Add Item
-    //                             </Button>
-    //                         </Form.Item>
-    //                     </>
-    //                 )}
-    //             </Form.List>
-    //         ),
-    //     },
-    // ];
-
     return (
-        // The Card component is now used for styling the form container
-        <Card variant="borderless" bodyStyle={{padding: '24px 0 0 0'}}>
+        <div style={{ padding: '8px 0' }}>
             <Form form={form} onFinish={onFinish} layout="vertical">
-                <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-                    <Input />
+                <Form.Item name="description" label="Description" rules={[{ required: true, message: 'Please enter a description' }]}>
+                    <Input 
+                        placeholder="What did you spend on?"
+                        style={{
+                            borderRadius: '8px',
+                            padding: '12px'
+                        }}
+                    />
                 </Form.Item>
-                <Form.Item name="paidById" label="Paid By" rules={[{ required: true }]}>
-                    <Select placeholder="Select who paid">
-                        {participants.map(p => <Option key={p.id} value={p.id}>{p.name}</Option>)}
-                    </Select>
-                </Form.Item>
-                <Form.Item name="expenseDate" label="Date" rules={[{ required: true }]}>
-                    <DatePicker style={{ width: '100%' }} />
+                
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item name="paidById" label="Paid By" rules={[{ required: true, message: 'Please select who paid' }]}>
+                            <Select 
+                                placeholder="Select who paid"
+                                style={{ borderRadius: '8px' }}
+                            >
+                                {participants.map(p => (
+                                    <Option key={p.id} value={p.id}>
+                                        <Space>
+                                            <Avatar size="small" style={{ background: `hsl(${(p.id * 137.5) % 360}, 70%, 60%)` }}>
+                                                {p.name.charAt(0).toUpperCase()}
+                                            </Avatar>
+                                            {p.name}
+                                        </Space>
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name="expenseDate" label="Date" rules={[{ required: true, message: 'Please select a date' }]}>
+                            <DatePicker 
+                                style={{ width: '100%', borderRadius: '8px' }}
+                                placeholder="Select date"
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>
+
+                <Form.Item label="Split Method" style={{ marginBottom: '16px' }}>
+                    <Tabs 
+                        defaultActiveKey="equally" 
+                        onChange={setActiveTab} 
+                        items={tabItems}
+                        style={{
+                            marginTop: '8px'
+                        }}
+                    />
                 </Form.Item>
 
-                {/* The Tabs component now uses the `items` prop */}
-                <Tabs defaultActiveKey="equally" onChange={setActiveTab} items={tabItems} />
-
-                <Form.Item style={{ marginTop: '24px', marginBottom: 0 }}>
-                    <Button type="primary" htmlType="submit" block>Add Expense</Button>
+                <Form.Item style={{ marginTop: '32px', marginBottom: 0 }}>
+                    <Button 
+                        type="primary" 
+                        htmlType="submit" 
+                        block 
+                        size="large"
+                        style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            border: 'none',
+                            borderRadius: '12px',
+                            height: '48px',
+                            fontSize: '16px',
+                            fontWeight: '600'
+                        }}
+                    >
+                        Add Expense
+                    </Button>
                 </Form.Item>
             </Form>
-        </Card>
+        </div>
     );
 }

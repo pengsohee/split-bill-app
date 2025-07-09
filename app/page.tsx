@@ -38,30 +38,55 @@ export default function HomePage() {
     };
 
     return (
-        <div style={{
+        <div className="gradient-bg" style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '100vh',
-            backgroundColor: '#FFFFFF', // Set background to white
             padding: '24px',
             ...fontStyle
         }}>
-            <Space direction="vertical" size={24} style={{ width: '100%', maxWidth: 340, textAlign: 'center' }}>
-            
-            {/* Title and Subtitle */}
-            <div>
-                <Title level={2} style={{ margin: 0, fontWeight: 'bold', color: '#1F2937', ...fontStyle }}>
-                    Welcome To
-                </Title>
-                <Title level={2} style={{ margin: 0, marginTop: '-8px', fontWeight: 'bold', color: '#1F2937', ...fontStyle }}>
-                    Patungan
-                </Title>
+            <div className="glass-card" style={{
+                padding: '48px 32px',
+                borderRadius: '24px',
+                width: '100%',
+                maxWidth: '420px',
+                textAlign: 'center'
+            }}>
+                <Space direction="vertical" size={32} style={{ width: '100%' }}>
+                
+                {/* Title and Subtitle */}
+                <div>
+                    <div style={{ 
+                        fontSize: '3.5rem', 
+                        fontWeight: '700', 
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        marginBottom: '8px',
+                        ...fontStyle 
+                    }}>
+                        💰 Patungan
+                    </div>
 
-                <Text type="secondary" style={{ fontSize: '1rem', marginTop: '-8px', ...fontStyle }}>
-                    Split bill, not friendships.
-                </Text>
-            </div>
+                    <Text style={{ 
+                        fontSize: '1.125rem', 
+                        color: '#6b7280',
+                        display: 'block',
+                        marginBottom: '8px',
+                        ...fontStyle 
+                    }}>
+                        Split bills, not friendships
+                    </Text>
+                    
+                    <Text style={{ 
+                        fontSize: '0.875rem', 
+                        color: '#9ca3af',
+                        ...fontStyle 
+                    }}>
+                        Create groups, track expenses, and settle up with ease
+                    </Text>
+                </div>
 
             {/* Group Name Input */}
             <Input
@@ -93,6 +118,7 @@ export default function HomePage() {
             </Button>
 
             </Space>
+            </div>
         </div>
     );
 }

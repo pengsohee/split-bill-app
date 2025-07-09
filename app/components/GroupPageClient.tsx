@@ -314,83 +314,264 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
 
     // The entire JSX from your old page.tsx goes here
     return (
-        <div style={{ ...fontStyle, padding: '24px', maxWidth: '600px', margin: '0 auto', backgroundColor: '#FFFFFF' }}>
+        <div style={{ 
+            ...fontStyle, 
+            padding: '24px', 
+            maxWidth: '680px', 
+            margin: '0 auto', 
+            background: 'var(--background)',
+            minHeight: '100vh'
+        }}>
             {/* Header Section */}
-            <Row justify="space-between" align="middle" style={{ marginBottom: '16px' }}>
-                <Col>
-                    <Typography.Title level={3} style={{ ...fontStyle, margin: 0 }}>
-                        {group.name}
-                    </Typography.Title>
-                    <Button type="link" icon={<LinkOutlined />} onClick={handleShare} style={{ padding: 0, height: 'auto' }}>
-                        Copy Share Link
-                    </Button>
-                </Col>
-                <Col>
-                    <Tooltip title="Add New Expense">
-                        <Button type="primary" shape="circle" icon={<PlusOutlined />} size="large" onClick={() => setIsExpenseModalVisible(true)} />
-                    </Tooltip>
-                </Col>
-            </Row>
+            <Card style={{ 
+                marginBottom: '24px', 
+                background: 'var(--card-bg)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+                <Row justify="space-between" align="middle">
+                    <Col>
+                        <Typography.Title level={2} style={{ 
+                            ...fontStyle, 
+                            margin: 0, 
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                        }}>
+                            {group.name}
+                        </Typography.Title>
+                        <Button 
+                            type="link" 
+                            icon={<LinkOutlined />} 
+                            onClick={handleShare} 
+                            style={{ 
+                                padding: 0, 
+                                height: 'auto',
+                                color: '#6b7280',
+                                fontSize: '14px'
+                            }}
+                        >
+                            Copy Share Link
+                        </Button>
+                    </Col>
+                    <Col>
+                        <Tooltip title="Add New Expense">
+                            <Button 
+                                type="primary" 
+                                shape="circle" 
+                                icon={<PlusOutlined />} 
+                                size="large" 
+                                onClick={() => setIsExpenseModalVisible(true)}
+                                style={{
+                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    border: 'none',
+                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
+                                }}
+                            />
+                        </Tooltip>
+                    </Col>
+                </Row>
+            </Card>
 
             {/* Summary Section */}
-            <div style={{ marginBottom: '32px' }}>
-                <Typography.Title level={4} style={fontStyle}>Summary</Typography.Title>
-                <Table
-                    columns={summaryColumns}
-                    dataSource={summaryData}
-                    pagination={false}
-                    size="small"
-                    tableLayout="fixed"
-                />
-            </div>
+            <Card style={{ 
+                marginBottom: '24px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
+                <Typography.Title level={4} style={{ 
+                    ...fontStyle, 
+                    marginBottom: '16px',
+                    color: 'var(--foreground)'
+                }}>
+                    💸 Settlement Summary
+                </Typography.Title>
+                {summaryData.length > 0 ? (
+                    <Table
+                        columns={summaryColumns}
+                        dataSource={summaryData}
+                        pagination={false}
+                        size="small"
+                        tableLayout="fixed"
+                        style={{ 
+                            background: 'transparent'
+                        }}
+                    />
+                ) : (
+                    <div style={{ 
+                        textAlign: 'center', 
+                        padding: '24px',
+                        color: '#10b981',
+                        fontSize: '16px'
+                    }}>
+                        🎉 All settled up! No pending payments.
+                    </div>
+                )}
+            </Card>
 
             {/* Members Section */}
-            <div style={{ marginBottom: '32px' }}>
-                <Typography.Title level={4} style={fontStyle}>Members</Typography.Title>
+            <Card style={{ 
+                marginBottom: '24px',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
+                <Typography.Title level={4} style={{ 
+                    ...fontStyle, 
+                    marginBottom: '16px',
+                    color: 'var(--foreground)'
+                }}>
+                    👥 Members ({participants.length})
+                </Typography.Title>
                 <Space size="middle" wrap>
-                    {participants.map(p => (
+                    {participants.map((p, index) => (
                         <Tooltip key={p.id} title={`Edit ${p.name}`}>
-                            <Avatar 
-                                size="large" 
-                                icon={<UserOutlined />} 
-                                onClick={() => openEditModal(p)}
-                                style={{ cursor: 'pointer' }}
-                            />
+                            <div style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => openEditModal(p)}>
+                                <Avatar 
+                                    size={64} 
+                                    style={{ 
+                                        background: `hsl(${(index * 137.5) % 360}, 70%, 60%)`,
+                                        fontSize: '24px',
+                                        fontWeight: '600',
+                                        marginBottom: '8px',
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                                    }}
+                                >
+                                    {p.name.charAt(0).toUpperCase()}
+                                </Avatar>
+                                <div style={{ 
+                                    fontSize: '12px', 
+                                    color: '#6b7280',
+                                    maxWidth: '64px',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                }}>
+                                    {p.name}
+                                </div>
+                            </div>
                         </Tooltip>
                     ))}
                     <Tooltip title="Add New Member">
-                        <Button shape="circle" icon={<PlusOutlined />} size="large" onClick={() => setIsMemberModalVisible(true)} />
+                        <div style={{ textAlign: 'center' }}>
+                            <Button 
+                                shape="circle" 
+                                icon={<PlusOutlined />} 
+                                size="large" 
+                                onClick={() => setIsMemberModalVisible(true)}
+                                style={{
+                                    width: '64px',
+                                    height: '64px',
+                                    background: 'var(--border-light)',
+                                    border: '2px dashed var(--border)',
+                                    color: '#6b7280'
+                                }}
+                            />
+                            <div style={{ 
+                                fontSize: '12px', 
+                                color: '#6b7280',
+                                marginTop: '8px'
+                            }}>
+                                Add
+                            </div>
+                        </div>
                     </Tooltip>
                 </Space>
-            </div>
+            </Card>
 
             {/* History Section */}
-            <div>
-                <Typography.Title level={4} style={fontStyle}>History</Typography.Title>
-                <List
-                    grid={{ gutter: 16, column: 1 }}
-                    dataSource={expenses}
-                    renderItem={(expense: any) => (
-                        <List.Item>
-                            <Link href={`/expense/${expense.id}`} passHref legacyBehavior>
-                                <a>
-                                    <Card hoverable>
-                                        <Card.Meta
-                                            title={<span style={fontStyle}>{expense.description}</span>}
-                                            description={`Paid by: ${participants.find(p => p.id === expense.paid_by_id)?.name || 'Unknown'}`}
-                                        />
-                                        <div style={{ textAlign: 'right', marginTop: '16px' }}>
-                                            <Typography.Text strong>
-                                                Total: Rp {parseFloat(expense.amount).toLocaleString('id-ID')}
-                                            </Typography.Text>
-                                        </div>
-                                    </Card>
-                                </a>
-                            </Link>
-                        </List.Item>
-                    )}
-                />
-            </div>
+            <Card style={{ 
+                background: 'var(--card-bg)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
+                <Typography.Title level={4} style={{ 
+                    ...fontStyle, 
+                    marginBottom: '16px',
+                    color: 'var(--foreground)'
+                }}>
+                    📋 Recent Expenses
+                </Typography.Title>
+                {expenses.length > 0 ? (
+                    <List
+                        dataSource={expenses}
+                        renderItem={(expense: any) => (
+                            <List.Item style={{ padding: '12px 0', border: 'none' }}>
+                                <Link href={`/expense/${expense.id}`} passHref legacyBehavior>
+                                    <a style={{ width: '100%', textDecoration: 'none' }}>
+                                        <Card 
+                                            hoverable
+                                            style={{
+                                                border: '1px solid var(--border-light)',
+                                                borderRadius: '12px',
+                                                background: 'var(--background)',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            bodyStyle={{ padding: '16px' }}
+                                        >
+                                            <Row justify="space-between" align="middle">
+                                                <Col flex="1">
+                                                    <Typography.Text strong style={{ 
+                                                        ...fontStyle,
+                                                        fontSize: '16px',
+                                                        color: 'var(--foreground)',
+                                                        display: 'block',
+                                                        marginBottom: '4px'
+                                                    }}>
+                                                        {expense.description}
+                                                    </Typography.Text>
+                                                    <Typography.Text style={{ 
+                                                        color: '#6b7280',
+                                                        fontSize: '14px'
+                                                    }}>
+                                                        Paid by {participants.find(p => p.id === expense.paid_by_id)?.name || 'Unknown'}
+                                                    </Typography.Text>
+                                                    <Typography.Text style={{ 
+                                                        color: '#9ca3af',
+                                                        fontSize: '12px',
+                                                        display: 'block'
+                                                    }}>
+                                                        {new Date(expense.expense_date).toLocaleDateString('id-ID', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric'
+                                                        })}
+                                                    </Typography.Text>
+                                                </Col>
+                                                <Col>
+                                                    <Typography.Text className="currency-text" style={{
+                                                        fontSize: '18px',
+                                                        fontWeight: '700',
+                                                        color: '#10b981'
+                                                    }}>
+                                                        Rp {parseFloat(expense.amount).toLocaleString('id-ID')}
+                                                    </Typography.Text>
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </a>
+                                </Link>
+                            </List.Item>
+                        )}
+                    />
+                ) : (
+                    <div style={{ 
+                        textAlign: 'center', 
+                        padding: '48px 24px',
+                        color: '#6b7280'
+                    }}>
+                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>📝</div>
+                        <Typography.Text style={{ fontSize: '16px', color: '#6b7280' }}>
+                            No expenses yet. Add your first expense to get started!
+                        </Typography.Text>
+                    </div>
+                )}
+            </Card>
 
             {/* --- Modals --- */}
             <Modal
