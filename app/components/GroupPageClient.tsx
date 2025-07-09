@@ -230,27 +230,41 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
     // The final debt calculation logic
     const debtSummary = useMemo(() => {
         if (!participants?.length || !expenses?.length) return [];
-        const balances: { [key: number]: number } = {};
 
+        const balances: { [key: number]: number } = {};
         participants.forEach(p => { balances[p.id] = 0; });
         
         expenses.forEach(expense => {
             const amount = parseFloat(expense.amount);
             // The payer is credited the full amount
-            if (expense.paid_by_id) {
-                balances[expense.paid_by_id] += amount;
+            if (isNaN(amount) || !expense.paid_by_id) {
+                return;
             }
 
-            if (expense.split_method === 'equally' && expense.expense_equal_participants) {
+            // Credit the person who paid
+            balances[expense.paid_by_id] += amount;
+
+            // Debit the people who owe
+            if (expense.split_method === 'equally' && expense.expense_equal_participants?.length > 0) {
                 const share = amount / expense.expense_equal_participants.length;
-                expense.expense_equal_participants.forEach(p => { balances[p.participant_id] -= share; });
+                expense.expense_equal_participants.forEach(p => { 
+                    if (balances[p.participant_id] !== undefined) {
+                        balances[p.participant_id] -= share; 
+                    }
+                });
             } else if (expense.split_method === 'itemized' && expense.expense_items) {
                 expense.expense_items.forEach(item => {
                     const itemPrice = parseFloat(item.price);
-                    if (item.expense_item_participants?.length > 0) {
-                        const share = itemPrice / item.expense_item_participants.length;
-                        item.expense_item_participants.forEach(p => { balances[p.participant_id] -= share; });
+                    if (isNaN(itemPrice) || item.expense_item_participants?.length) {
+                        return;
                     }
+
+                    const share = itemPrice / item.expense_item_participants.length;
+                    item.expense_item_participants.forEach(p => {
+                        if (balances[p.participant_id] !== undefined){
+                            balances[p.participant_id] -= share;
+                        }
+                    })
                 });
             }
         });
