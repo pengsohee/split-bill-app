@@ -26,7 +26,7 @@ type InitialData = {
 // This is now an async Server Component. No "use client" here.
 export default async function GroupPage({ params }: { params: { groupId: string } }) {
   // Accessing params directly is fine in a Server Component.
-    const { groupId } = params;
+    const groupId = params.groupId;
 
     // Perform all initial data fetching on the server.
     const [groupRes, participantsRes, expensesRes] = await Promise.all([
