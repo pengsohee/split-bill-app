@@ -1,9 +1,9 @@
 "use client";
 
-import { List, Card, Typography, Button, Popconfirm, Tag } from 'antd';
+import { List, Card, Typography, Button, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 type Participant = { id: number; name: string; };
 type Expense = { id: number; description: string; amount: string; paid_by_id: number; expense_date: string; };
@@ -26,6 +26,7 @@ export default function ExpenseList({ expenses, participants, onDeleteExpense }:
                     <List.Item
                         actions={[
                             <Popconfirm
+                                key="delete"
                                 title="Delete the expense"
                                 description="Are you sure you want to delete this expense?"
                                 onConfirm={() => onDeleteExpense(item.id)}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { UserOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Card, List, Avatar, Input, Button, Form } from 'antd';
 
@@ -17,16 +16,7 @@ export default function Participants({ participants, onAddParticipant }: Partici
     const onFinish = (values: { name: string; }) => {
         onAddParticipant(values.name);
         form.resetFields();
-    };
-
-    const [newName, setNewName] = useState('');
-
-    const handleAdd = () => {
-        if (newName.trim()) {
-        onAddParticipant(newName.trim());
-        setNewName('');
-        }
-    };
+    };    
 
     return (
         <Card title="Group Participants">

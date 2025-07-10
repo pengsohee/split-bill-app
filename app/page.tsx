@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient'; // Ensure this path is correct
-import { Input, Button, Typography, Space, Spin, message } from 'antd';
+import { Input, Button, Typography, Space, message } from 'antd';
 
-const { Title, Text } = Typography;
+const {  Text } = Typography;
 const fontStyle = { fontFamily: "'Lexend Deca', sans-serif" };
 
 export default function HomePage() {
@@ -32,6 +32,7 @@ export default function HomePage() {
             router.push(`/group/${data.id}`);
 
         } catch (error) {
+            console.error("Error creating group:", error); 
             message.error('Failed to create group. Please try again.');
             setIsLoading(false);
         }

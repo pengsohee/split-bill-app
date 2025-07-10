@@ -6,8 +6,39 @@ import Link from 'next/link';
 
 const fontStyle = { fontFamily: "'Lexend Deca', sans-serif" };
 
+interface EqualParticipant {
+    participants: {
+        name: string;
+    };
+}
+
+interface ItemParticipant {
+    participants: {
+        name: string;
+    };
+}
+
+interface ExpenseItem {
+    id: number;
+    description: string;
+    price: string;
+    expense_item_participants: ItemParticipant[];
+}
+
+interface ExpenseDetail {
+    id: number;
+    description: string;
+    amount: string;
+    expense_date: string;
+    split_method: 'equally' | 'itemized';
+    participants: { name: string }; // The person who paid
+    expense_equal_participants: EqualParticipant[];
+    expense_items: ExpenseItem[];
+    group_id: string;
+}
+
 // This is a Client Component that receives data via props
-export default function ExpenseDetailClient({ expenseDetail }: { expenseDetail: any }) {
+export default function ExpenseDetailClient({ expenseDetail }: { expenseDetail: ExpenseDetail | null }) {
 
     if (!expenseDetail) {
         return <div style={{...fontStyle, padding: '40px', textAlign: 'center'}}>Expense data is not available.</div>;
@@ -48,7 +79,7 @@ export default function ExpenseDetailClient({ expenseDetail }: { expenseDetail: 
                             <Typography.Text>Split equally among:</Typography.Text>
                             <List
                                 dataSource={expenseDetail.expense_equal_participants}
-                                renderItem={(item: any) => (
+                                renderItem={(item: EqualParticipant) => (
                                     <List.Item>
                                         <List.Item.Meta
                                             avatar={<UserOutlined />}
@@ -67,7 +98,7 @@ export default function ExpenseDetailClient({ expenseDetail }: { expenseDetail: 
                         <List
                             itemLayout="vertical"
                             dataSource={expenseDetail.expense_items}
-                            renderItem={(item: any) => (
+                            renderItem={(item: ExpenseItem) => (
                                 <List.Item>
                                     <List.Item.Meta
                                         title={item.description}
@@ -78,7 +109,7 @@ export default function ExpenseDetailClient({ expenseDetail }: { expenseDetail: 
                                         }
                                     />
                                     <div>
-                                        {item.expense_item_participants.map((p: any) => (
+                                        {item.expense_item_participants.map((p: ItemParticipant) => (
                                             <Tag key={p.participants.name}>{p.participants.name}</Tag>
                                         ))}
                                     </div>
