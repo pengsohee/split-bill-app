@@ -18,9 +18,10 @@ import {
     Tooltip,
     Table,
     Space,
-    Popconfirm
+    Popconfirm,
+    Popover
 } from 'antd';
-import { PlusOutlined, UserOutlined, LinkOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined, LinkOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 
 
@@ -269,12 +270,11 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
             }
         });
 
-        // Separate into debtors and creditors
-        const creditors = Object.entries(balances).filter(([, bal]) => bal > 0).map(([id, bal]) => ({ id: Number(id), amount: bal }));
+        // Simplify Final Balances
+        const creditors = Object.entries(balances).filter(([, bal]) => bal > 0.01).map(([id, bal]) => ({ id: Number(id), amount: bal }));
         const debtors = Object.entries(balances).filter(([, bal]) => bal < 0).map(([id, bal]) => ({ id: Number(id), amount: -bal }));
         
         const transactions = [];
-        // Greedy algorithm to simplify debts
         while (debtors.length > 0 && creditors.length > 0) {
             const debtor = debtors[0];
             const creditor = creditors[0];
@@ -326,7 +326,18 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
 
     if (!group) return <div className="text-center p-10 font-semibold text-xl text-red-500">Group not found.</div>;
 
-    // The entire JSX from your old page.tsx goes here
+    const summaryExplanation = (
+        <div style={{ maxWidth: 250 }}>
+            <p>This summary shows the simplest way to settle all debts.</p>
+            <p><strong>How it works:</strong></p>
+            <ol style={{ paddingLeft: 20 }}>
+                <li>Calculates the total balance for each person (money paid vs. money owed).</li>
+                <li>Identifies who is owed money (creditors) and who owes money (debtors).</li>
+                <li>Matches debtors to creditors to create the minimum number of payments.</li>
+            </ol>   
+        </div>
+    )
+
     return (
         <div style={{ 
             ...fontStyle, 
@@ -403,6 +414,9 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
                 }}>
                     💸 Settlement Summary
                 </Typography.Title>
+                <Popover content={summaryExplanation} title="How is this calculated?" trigger="click">
+                        <InfoCircleOutlined style={{ color: 'rgba(0, 0, 0, 0.45)', cursor: 'pointer' }} />
+                </Popover>
                 {summaryData.length > 0 ? (
                     <Table
                         columns={summaryColumns}
