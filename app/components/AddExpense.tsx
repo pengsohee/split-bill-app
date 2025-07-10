@@ -3,25 +3,40 @@
 import { useState } from 'react';
 import { Card, Form, Input, Button, Select, DatePicker, InputNumber, Checkbox, Tabs, Space, Row, Col, Avatar } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import TabPane from 'antd/es/tabs/TabPane';
+import type { Dayjs } from 'dayjs';
 
 const { Option } = Select;
 
-type Participant = { 
+interface Participant { 
     id: number; 
     name: string; 
 };
 
+interface ItemFormData {
+    description: string;
+    price: number;
+    participants: number[];
+}
+
+interface NewExpenseFormData {
+    description: string;
+    paidById: number;
+    expenseDate: Dayjs; // Ant Design's DatePicker returns a specific object type
+    amount?: number;
+    participants?: number[];
+    items?: ItemFormData[];
+}
+
 interface AddExpenseProps {
     participants: Participant[];
-    onAddExpense: (expense: any) => Promise<void>;
+    onAddExpense: (values: NewExpenseFormData) => void;
 }
 
 export default function AddExpense({ participants, onAddExpense }: AddExpenseProps) {
     const [form] = Form.useForm();
     const [activeTab, setActiveTab] = useState('equally');
 
-    const onFinish = (values: any) => {
+    const onFinish = (values: NewExpenseFormData) => {
         const expenseData = {
             ...values,
             split_method: activeTab,

@@ -12,7 +12,6 @@ import {
     Row,
     Col,
     Modal,
-    Form,
     Input,
     message,
     Tooltip,
@@ -21,9 +20,9 @@ import {
     Popconfirm,
     Popover
 } from 'antd';
-import { PlusOutlined, UserOutlined, LinkOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, LinkOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-
+import type { Dayjs } from 'dayjs';
 
 // Define the types for your data
 type Participant = { id: number; name: string; };
@@ -51,6 +50,21 @@ type InitialData = {
 interface GroupPageClientProps {
     groupId: string;
     initialData: InitialData;
+}
+
+interface ItemFormData {
+    description: string;
+    price: number;
+    participants: number[];
+}
+
+interface NewExpenseFormData {
+    description: string;
+    paidById: number;
+    expenseDate: Dayjs;
+    amount?: number;
+    participants?: number[];
+    items?: ItemFormData[];
 }
 
 const fontStyle = { fontFamily: "'Lexend Deca', sans-serif" };
@@ -143,7 +157,7 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
         setIsEditMemberModalVisible(true);
     };
     
-    const handleAddExpense = async (formValues: any) => {
+    const handleAddExpense = async (formValues: NewExpenseFormData) => {
     // --- Data Pre-processing Step ---
 
     // 1. Determine the split method based on form fields
@@ -154,8 +168,8 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
     // For itemized splits, sum the price of each item.
     // For equal splits, use the provided amount.
     const totalAmount = isItemized
-        ? formValues.items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) || 0), 0)
-        : parseFloat(formValues.amount);
+            ? formValues.items?.reduce((sum, item) => sum + (item.price || 0), 0)
+            : formValues.amount || 0;
 
     // 3. Create a clean data object with a formatted date
     const cleanExpenseData = {
@@ -188,7 +202,7 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
 
             if (expenseError) throw expenseError;
 
-            const links = cleanExpenseData.participants.map((pId: number) => ({ expense_id: expense.id, participant_id: pId }));
+            const links = cleanExpenseData.participants?.map((pId: number) => ({ expense_id: expense.id, participant_id: pId }));
             await supabase.from('expense_equal_participants').insert(links);
 
         } else { // 'itemized'
@@ -202,31 +216,24 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
                         paidById: cleanExpenseData.paidById,
                         expenseDate: cleanExpenseData.expenseDate
                     },
-                    items: cleanExpenseData.items.map((item: any) => ({
-                        description: item.description,
-                        price: item.price,
-                        participants: item.participants
-                    }))
+                    items: cleanExpenseData.items
                 }
             });
             if (error) throw error;
         }
 
         message.success('Expense added successfully!');
+        setIsExpenseModalVisible(false);
         await refreshData(); // Refresh UI
 
-    } catch (error: any) {
-        console.error("Error adding expense:", error);
-        message.error(error.message || 'Failed to add expense.');
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            message.error(error.message || 'Failed to add expense.');
+        } else {
+            message.error('An unknown error occurred while adding the expense.');
+        }
     }
 };
-
-    const handleDeleteExpense = async (expenseId: number) => {
-        // ... (no changes here)
-        const { error } = await supabase.from('expenses').delete().eq('id', expenseId);
-        if (error) console.error(error);
-        else setExpenses(expenses.filter(e => e.id !== expenseId));
-    };
 
     // The final debt calculation logic
     const debtSummary = useMemo(() => {
@@ -528,7 +535,7 @@ export default function GroupPageClient({ groupId, initialData }: GroupPageClien
                 {expenses.length > 0 ? (
                     <List
                         dataSource={expenses}
-                        renderItem={(expense: any) => (
+                        renderItem={(expense: Expense) => (
                             <List.Item style={{ padding: '12px 0', border: 'none' }}>
                                 <Link href={`/expense/${expense.id}`} passHref legacyBehavior>
                                     <a style={{ width: '100%', textDecoration: 'none' }}>
