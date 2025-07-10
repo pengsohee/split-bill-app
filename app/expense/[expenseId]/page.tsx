@@ -21,8 +21,14 @@ type ExpenseDetail = {
     group_id: string;
 };
 
+interface ExpenseDetailPageProps {
+    params: {
+        expenseId: string;
+    };
+}
+
 // This is an async Server Component that fetches data before rendering
-export default async function ExpenseDetailPage({ params }: { params: { expenseId: string } }) {
+export default async function ExpenseDetailPage({ params }: ExpenseDetailPageProps) {
     const { expenseId } = params;
 
     // Fetch the specific expense and all its related data from Supabase

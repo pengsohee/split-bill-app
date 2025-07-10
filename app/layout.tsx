@@ -2,13 +2,11 @@ import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
 import 'antd/dist/reset.css';
+import { lexend_deca } from '@/lib/fonts';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
-    <html lang="en">
+    <html lang="en" className={lexend_deca.className}>
         <head>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;700&display=swap" rel="stylesheet" />
         </head>
         <body>
             <AntdRegistry>
