@@ -28,8 +28,11 @@ interface PageProps {
 
 
 // This is an async Server Component that fetches data before rendering
-export default async function ExpenseDetailPage({ params }: PageProps ) {
-    const { expenseId } = params;
+export default async function ExpenseDetailPage(props: {
+    params: Promise<{ expenseId: string }>
+}) {
+    const params = await props.params;
+    const expenseId = params.expenseId;
 
     // Fetch the specific expense and all its related data from Supabase
     const { data: expense, error } = await supabase

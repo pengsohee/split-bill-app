@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
 import GroupPageClient from '@/app/components/GroupPageClient';
+import { use } from 'react';
 
 type Participant = { id: number; name: string; };
 type Group = { id: string; name: string; };
@@ -23,9 +24,14 @@ type InitialData = {
     expenses: Expense[];
 };
 
+type tParams = Promise<{ groupId: string }>
+
 // This is now an async Server Component. No "use client" here.
-export default async function GroupPage({ params }: { params: { groupId: string } }) {
+export default async function GroupPage(props: {
+    params: Promise<{ groupId: string }> 
+}) {
   // Accessing params directly is fine in a Server Component.
+    const params = await props.params;
     const groupId = params.groupId;
 
     // Perform all initial data fetching on the server.
