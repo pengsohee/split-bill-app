@@ -21,12 +21,6 @@ type ExpenseDetail = {
     group_id: string;
 };
 
-interface PageProps {
-    params: { expenseId: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-
 // This is an async Server Component that fetches data before rendering
 export default async function ExpenseDetailPage(props: {
     params: Promise<{ expenseId: string }>

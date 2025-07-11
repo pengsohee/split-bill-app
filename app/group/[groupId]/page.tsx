@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
 import GroupPageClient from '@/app/components/GroupPageClient';
-import { use } from 'react';
 
 type Participant = { id: number; name: string; };
 type Group = { id: string; name: string; };
@@ -23,8 +22,6 @@ type InitialData = {
     participants: Participant[];
     expenses: Expense[];
 };
-
-type tParams = Promise<{ groupId: string }>
 
 // This is now an async Server Component. No "use client" here.
 export default async function GroupPage(props: {
